@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "start": "yarn dev:start",
-    "dev:start": "nodemon --ignore lib --exec babel-node src --inspect",
+    "dev:start": "nodemon --ignore lib --exec babel-node src",
     "prod:build": "rimraf lib && babel src --out-dir lib --copy-files --ignore .test.js",
     "prod:start": "cross-env NODE_ENV=production pm2 start lib --name stop-playing-2 && pm2 logs stop-playing-2",
     "prod:stop": "pm2 delete stop-playing-2",
