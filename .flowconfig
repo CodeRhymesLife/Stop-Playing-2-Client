@@ -1,0 +1,7 @@
+[options]
+suppress_comment= \\(.\\|\n\\)*\\flow-disable-next-line
+unsafe.enable_getters_and_setters=true
+munge_underscores=true
+
+[ignore]
+.*/node_modules/jss/.*

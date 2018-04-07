@@ -1,0 +1,39 @@
+{
+  "name": "Stop-Playing-2",
+  "version": "1.0.0",
+  "description": "A program to help people schedule game time",
+  "main": "index.js",
+  "repository": "https://github.com/drryanjames/Stop-Playing-2.git",
+  "author": "drryanjames <rcjames1004@gmail.com>",
+  "private": true,
+  "scripts": {
+    "start": "yarn dev:start",
+    "dev:start": "nodemon --ignore lib --exec babel-node src --inspect",
+    "prod:build": "rimraf lib && babel src --out-dir lib --copy-files --ignore .test.js",
+    "prod:start": "cross-env NODE_ENV=production pm2 start lib --name stop-playing-2 && pm2 logs stop-playing-2",
+    "prod:stop": "pm2 delete stop-playing-2",
+    "lint": "eslint src",
+    "test": "jest"
+  },
+  "dependencies": {
+    "babel-core": "^6.25.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.5.2",
+    "delay": "^2.0.0",
+    "lodash": "^4.17.5",
+    "pm2": "^2.7.1",
+    "rimraf": "^2.6.2",
+    "taskkill": "^2.0.0",
+    "tasklist": "^3.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^8.0.2",
+    "babel-preset-flow": "^6.23.0",
+    "cross-env": "^5.0.5",
+    "eslint": "^4.10.0",
+    "eslint-plugin-flowtype": "^2.39.1",
+    "flow-bin": "^0.58.0",
+    "jest": "^22.4.3"
+  }
+}
