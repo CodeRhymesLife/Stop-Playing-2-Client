@@ -1,5 +1,5 @@
 // @flow
-import tasklist from 'tasklist'
+import ps from 'current-processes'
 import _ from 'lodash'
 
 const LOG_TAG = '[Monitor]'
@@ -35,7 +35,7 @@ export default class Monitor {
 
 		// Check for tasks periodically
 		const self = this
-		this._watchIntervalKey = setInterval(async () => await self.checkTasks(), this._options.interval)
+		this._watchIntervalKey = setInterval(() => self.checkTasks(), this._options.interval)
 	}
 
 	stop() {
@@ -59,16 +59,28 @@ export default class Monitor {
 
 		console.log(LOG_TAG, `searching for tasks [${watchList.join(',')}]`)
 
-		const tasks = await tasklist()
+		// Get the tasks
+		const tasks = await this.getTasks()
 
 		console.log(LOG_TAG, `tasklist returned ${tasks.length} tasks`)
-		const found = tasks.filter(task => watchList.includes(task.imageName.toLowerCase()))
+		const found = tasks.filter(task => watchList.includes(task.name.toLowerCase()))
 		
 		// If we found tasks fire the callback
 		const taskFoundCallback = this._options.taskFoundCallback
 		if(taskFoundCallback && found && found.length > 0) {
-			console.log(LOG_TAG, `found ${found.map(foundTask => foundTask.imageName).join(',')} tasks`)
+			console.log(LOG_TAG, `found ${found.map(foundTask => foundTask.name).join(',')} tasks`)
 			taskFoundCallback(found)
 		}
+	}
+
+	getTasks() {
+		return new Promise((fulfill, reject) => {
+			ps.get(function(err, processes) {
+				if(err)
+					reject(err)
+				else
+					fulfill(processes)
+			})
+		})
 	}
 }

@@ -4,7 +4,7 @@ import Monitor from './monitor'
 
 const run = () => {
 	const monitor = new Monitor({
-		watchList: ['notepad.exe'],
+		watchList: ['notepad'],
 
 		// Kill tasks when they show up
 		taskFoundCallback: tasks => tasks.forEach(task => taskkill(task.pid)),

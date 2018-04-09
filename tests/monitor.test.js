@@ -1,9 +1,8 @@
 import delay from 'delay'
-import tasklist from 'tasklist'
 
 import Monitor from '../src/monitor'
 
-jest.mock('tasklist')
+const LOG_TAG = '[monitor.tests]'
 
 // A list of the monitors that have been created
 let monitors = []
@@ -21,6 +20,18 @@ afterEach(() => {
 // Save monitors that are created so we can make sure they're stopped afterward
 const createMonitor = (options) => {
 	const monitor = new Monitor(options)
+
+	// Used to mock out tasks
+	monitor.mockTasks = taskNames => {
+		// Creates an array of tasks from names and returns
+		// them when monitor.getTasks is called 
+		const mockedTasks = (taskNames || []).map(taskName => { return {name: taskName }})
+		monitor.getTasks = jest.fn(() => {
+			console.log(LOG_TAG, `mock get tasks resolving ${mockedTasks.length} tasks`)
+			return Promise.resolve(mockedTasks)
+		})
+	}
+
 	monitors.push(monitor)
 	return monitor
 }
@@ -39,7 +50,7 @@ describe('start tests', () => {
 		})
 
 		// return the task from tasklist
-		tasklist.tests.setTasks([task])
+		monitor.mockTasks([task])
 
 		// -- Run
 		monitor.start()
@@ -53,7 +64,7 @@ describe('start tests', () => {
 		// Make sure the returned values are valid
 		const returnedTasks = taskFoundCallback.mock.calls[0][0]
 		expect(returnedTasks.length).toBe(1)
-		expect(returnedTasks[0].imageName).toBe(task)
+		expect(returnedTasks[0].name).toBe(task)
 	})
 
 	test('return task with capital -- check for task with lowercase -- find task', async () => {
@@ -68,7 +79,7 @@ describe('start tests', () => {
 		})
 
 		// return the task from tasklist
-		tasklist.tests.setTasks([task.toLowerCase()])
+		monitor.mockTasks([task.toLowerCase()])
 
 		// -- Run
 		monitor.start()
@@ -82,7 +93,7 @@ describe('start tests', () => {
 		// Make sure the returned values are valid
 		const returnedTasks = taskFoundCallback.mock.calls[0][0]
 		expect(returnedTasks.length).toBe(1)
-		expect(returnedTasks[0].imageName).toBe(task.toLowerCase())
+		expect(returnedTasks[0].name).toBe(task.toLowerCase())
 	})
 
 	test('return task -- check for different task -- do not find task', async () => {
@@ -97,7 +108,7 @@ describe('start tests', () => {
 		})
 
 		// return the task from tasklist
-		tasklist.tests.setTasks(['someOtherTask'])
+		monitor.mockTasks(['someOtherTask'])
 
 		// -- Run
 		monitor.start()
@@ -121,7 +132,7 @@ describe('start tests', () => {
 		})
 
 		// return the task from tasklist
-		tasklist.tests.setTasks([task])
+		monitor.mockTasks([task])
 
 		// -- Run
 		monitor.start()
@@ -146,7 +157,7 @@ describe('start tests', () => {
 		})
 
 		// return the task from tasklist
-		tasklist.tests.setTasks(['3', '4', '1', '0'])
+		monitor.mockTasks(['3', '4', '1', '0'])
 
 		// -- Run
 		monitor.start()
@@ -162,7 +173,7 @@ describe('start tests', () => {
 		const foundTasks = ['1', '3']
 		expect(returnedTasks.length).toBe(foundTasks.length)
 
-		const foundTasksInReturnedTasks = returnedTasks.filter(returnedTask => foundTasks.includes(returnedTask.imageName))
+		const foundTasksInReturnedTasks = returnedTasks.filter(returnedTask => foundTasks.includes(returnedTask.name))
 		expect(foundTasksInReturnedTasks.length).toBe(foundTasks.length)
 	})
 
