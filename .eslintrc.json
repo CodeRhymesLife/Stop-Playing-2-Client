@@ -1,0 +1,42 @@
+{
+  "extends": [
+    "airbnb",
+    "plugin:flowtype/recommended"
+  ],
+  "plugins": [
+    "flowtype",
+    "compat"
+  ],
+  "rules": {
+    "semi": [2, "never"],
+    "no-unexpected-multiline": 2,
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "compat/compat": 2,
+    "linebreak-style": 0,
+    "indent": ["error", "tab"],
+    "no-tabs": 0,
+    "no-underscore-dangle": 0,
+    "react/jsx-indent": [1, "tab"],
+    "react/jsx-indent-props": [1, "tab"],
+    "react/prop-types": 0,
+    "react/sort-comp": [
+      2,
+      {
+        "order": [
+          "type-annotations",
+          "static-methods",
+          "lifecycle",
+          "everything-else",
+          "render"
+        ]
+      }
+    ]
+  },
+  "env": {
+    "browser":true,
+    "jest": true
+  },
+  "settings": {
+    "polyfills": ["fetch"]
+  }
+}
